@@ -1,0 +1,3 @@
+[submodule "git-commit-filetree"]
+	path = git-commit-filetree
+	url = https://github.com/cynic-net/git-commit-filetree.git
