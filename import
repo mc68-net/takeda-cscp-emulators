@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+die() {
+    local exitcode="$1"; shift
+    echo 1>&2 "$@"
+    exit "$exitcode"
+}
+
+warn() { echo 1>&2 "$@"; }
+
+check_submodules() {
+    count=$(git submodule status --recursive | sed -n -e '/^[^ ]/p' | wc -l)
+    [[ $count -eq 0 ]] || {
+        warn "$count Git submodules are not up to date"
+        warn 'Run `git submodule update --init`?'
+    }
+    [[ -x $gcf ]] || die 3 "Canot find $gcf"
+}
+
+[[ ${#@} -gt 0 ]] || die 2 "Usage: import <revisiondate>"
+rev="$1"; shift
+[[ ${#@} -eq 0 ]] || die 2 "Usage: import <revisiondate>"
+
+gcf=git-commit-filetree/bin/git-commit-filetree
+file="$rev.zip"
+url="http://takeda-toshiya.my.coocan.jp/common/history/$file"
+
+command cd -P $(dirname "$0")
+check_submodules
+mkdir -p .build/
+
+echo "----- Downloading: $url"
+curl --fail --create-dirs -o ".build/$file" "$url"
+
+echo "----- Extracting $file"
+rm -rf ".build/$rev"
+unzip -q -d ".build" ".build/$file"
+echo "----- Committing $rev on vendor branch"
+GIT_COMMIT_MESSAGE=$(printf "Import CSCP version $rev\n\nFrom: $url") \
+    git-commit-filetree/bin/git-commit-filetree vendor ".build/$rev"
