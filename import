@@ -23,7 +23,7 @@ rev="$1"; shift
 [[ ${#@} -eq 0 ]] || die 2 "Usage: import <revisiondate>"
 
 gcf=git-commit-filetree/bin/git-commit-filetree
-file="$rev.zip"
+file="$rev.7z"  # previously was .zip
 url="http://takeda-toshiya.my.coocan.jp/common/history/$file"
 
 command cd -P $(dirname "$0")
@@ -35,7 +35,7 @@ curl --fail --create-dirs -o ".build/$file" "$url"
 
 echo "----- Extracting $file"
 rm -rf ".build/$rev"
-unzip -q -d ".build" ".build/$file"
-echo "----- Committing $rev on vendor branch"
+(cd .build && p7zip -d "$file")
+#echo "----- Committing $rev on vendor branch"
 GIT_COMMIT_MESSAGE=$(printf "Import CSCP version $rev\n\nFrom: $url") \
     git-commit-filetree/bin/git-commit-filetree vendor ".build/$rev"
