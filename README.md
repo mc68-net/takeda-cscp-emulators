@@ -1,9 +1,10 @@
 (Emulator) Common Source Code Project
 =====================================
 
-This is a Git repo containing releases of Toshiya Takeda's [Common
-Source Code Project][cscp], an archive of emulators for many different
-Japanese microcomputers, mainly from the 1980s.
+This is a Git repo containing the source code releases of Toshiya Takeda's
+[Common Source Code Project][cscp], an archive of emulators for many
+different Japanese microcomputers, mainly from the 1980s. These can
+be compiled and run only under Windows.
 
 Sequential commits, from earliest to most recent, of the individual
 releases from the [archives] are on the `vendor` branch of this repo.
